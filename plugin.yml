@@ -1,0 +1,40 @@
+name: XPBuy
+main: com.github.xpbuy.XPBuy
+version: 2.0.1
+author: Bobjoejim
+commands:
+  xpbuy:
+    description: Opens up the XPBuy menu.
+    usage: /xpbuy <kit>
+permissions:
+  xpbuy.*:
+    description: Gives access to all XPBuy commands.
+    children:
+      xpbuy.help: true
+      xpbuy.list: true
+      xpbuy.buy: true
+      xpbuy.create: false
+      xpbuy.remove: false
+      xpbuy.edit: false
+      xpbuy.donator: false
+  xpbuy.help:
+    description: Allows you to display help
+    default: true
+  xpbuy.list:
+    description: Allows you to list kits
+    default: true
+  xpbuy.buy:
+    description: Allows you to buy a kit
+    default: true
+  xpbuy.create:
+    description: Allows you to create kits in-game
+    default: op
+  xpbuy.remove:
+    description: Allows you to remove kits in-game
+    default: op
+  xpbuy.edit:
+    description: Allows you to edit kits in-game
+    default: op
+  xpbuy.donator:
+    description: Allows you to use donator kits
+    default: op

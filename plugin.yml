@@ -1,40 +1,82 @@
 name: XPBuy
 main: com.github.xpbuy.XPBuy
-version: 2.0.1
+version: 2.5
 author: Bobjoejim
+description: Buy kits with your experience levels!
 commands:
   xpbuy:
-    description: Opens up the XPBuy menu.
-    usage: /xpbuy <kit>
+    description: Opens the XPBuy menu
+    usage: /xpbuy
+  xpb:
+    description: Opens the XPBuy menu
+    usage: /xpb
 permissions:
   xpbuy.*:
-    description: Gives access to all XPBuy commands.
+    description: Gives access to all XPBuy commands
+    deafult: op
     children:
       xpbuy.help: true
       xpbuy.list: true
       xpbuy.buy: true
-      xpbuy.create: false
-      xpbuy.remove: false
-      xpbuy.edit: false
-      xpbuy.donator: false
+      xpbuy.signs: true
+      xpbuy.create: true
+      xpbuy.remove: true
+      xpbuy.edit: true
+      xpbuy.giveperm: true
+      xpbuy.delperm: true
+      xpbuy.admin: true
+  xpbuy.default:
+    description: Gives access to the default XPBuy features
+    default: false
+    children:
+      xpbuy.help: true
+      xpbuy.list: true
+      xpbuy.buy: true
+      xpbuy.signs: true
+  xpbuy.commands:
+    description: Gives access to the XPBuy command
+    default: false
+    children:
+      xpbuy.help: true
+      xpbuy.list: true
+      xpbuy.buy: true
+    xpbuy.admin:
+      description: Gives access to XPBuy admin commands
+      default: op
+      children:
+        xpbuy.create: true
+        xpbuy.remove: true
+        xpbuy.edit: true
+        xpbuy.giveperm: true
+        xpbuy.delperm: true
+        xpbuy.adminmode: true
   xpbuy.help:
     description: Allows you to display help
-    default: true
+    default: false
   xpbuy.list:
     description: Allows you to list kits
-    default: true
+    default: false
   xpbuy.buy:
     description: Allows you to buy a kit
-    default: true
+    default: false
+  xpbuy.signs:
+    description: Allows you to use class signs
+    default: false
   xpbuy.create:
     description: Allows you to create kits in-game
-    default: op
+    default: false
   xpbuy.remove:
     description: Allows you to remove kits in-game
-    default: op
+    default: false
   xpbuy.edit:
     description: Allows you to edit kits in-game
-    default: op
-  xpbuy.donator:
-    description: Allows you to use donator kits
-    default: op
+    default: false
+  xpbuy.giveperm:
+    description: Allows you to give kit permissions to players
+    default: false
+  xpbuy.delperm:
+    description: Allows you to delete kit permissions from players
+    default: false
+  xpbuy.adminmode:
+    description: Allows admin access
+    default: false

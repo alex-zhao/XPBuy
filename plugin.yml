@@ -1,6 +1,6 @@
 name: XPBuy
 main: com.github.xpbuy.XPBuy
-version: 2.5
+version: 2.7
 author: Bobjoejim
 description: Buy kits with your experience levels!
 commands:
@@ -18,13 +18,15 @@ permissions:
       xpbuy.help: true
       xpbuy.list: true
       xpbuy.buy: true
-      xpbuy.signs: true
+      xpbuy.usesigns: true
+      xpbuy.createsigns: true
       xpbuy.create: true
       xpbuy.remove: true
       xpbuy.edit: true
       xpbuy.giveperm: true
       xpbuy.delperm: true
       xpbuy.admin: true
+      xpbuy.reload: true
   xpbuy.default:
     description: Gives access to the default XPBuy features
     default: false
@@ -32,14 +34,7 @@ permissions:
       xpbuy.help: true
       xpbuy.list: true
       xpbuy.buy: true
-      xpbuy.signs: true
-  xpbuy.commands:
-    description: Gives access to the XPBuy command
-    default: false
-    children:
-      xpbuy.help: true
-      xpbuy.list: true
-      xpbuy.buy: true
+      xpbuy.usesigns: true
     xpbuy.admin:
       description: Gives access to XPBuy admin commands
       default: op
@@ -47,9 +42,11 @@ permissions:
         xpbuy.create: true
         xpbuy.remove: true
         xpbuy.edit: true
+        xpbuy.createsigns: true
         xpbuy.giveperm: true
         xpbuy.delperm: true
         xpbuy.adminmode: true
+        xpbuy.reload: true
   xpbuy.help:
     description: Allows you to display help
     default: false
@@ -59,8 +56,11 @@ permissions:
   xpbuy.buy:
     description: Allows you to buy a kit
     default: false
-  xpbuy.signs:
+  xpbuy.usesigns:
     description: Allows you to use class signs
+    default: false
+  xpbuy.createsigns:
+    description: Allows you to create class signs
     default: false
   xpbuy.create:
     description: Allows you to create kits in-game
@@ -80,3 +80,6 @@ permissions:
   xpbuy.adminmode:
     description: Allows admin access
     default: false
+  xpbuy.reload:
+    description: Allows you to reload
+    default: op

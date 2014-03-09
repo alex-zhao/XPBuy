@@ -15,25 +15,29 @@ public class BuySigns extends XPBuy implements Listener {
 	public void createClassSign(SignChangeEvent event) {
 		String[] lines = event.getLines();
 		if (lines[0].equalsIgnoreCase("[class]") || lines[0].equalsIgnoreCase("[xpbuy]")) {
-			String kitName = lines[1].toLowerCase();
-			if (Kit.isKit(kitName)) {
-				int price = Kit.getPrice(kitName);
-				String isDonator;
-				if (Kit.isDonator(kitName)) {
-					isDonator = "Donator Kit";
+			if (event.getPlayer().hasPermission("xpbuy.createsigns")) {
+				String kitName = lines[1].toLowerCase();
+				if (Kit.isKit(kitName)) {
+					int price = Kit.getPrice(kitName);
+					String isDonator;
+					if (Kit.isDonator(kitName)) {
+						isDonator = "Donator Kit";
+					} else {
+						isDonator = "XP Kit";
+					}
+					event.setLine(0, ChatColor.GREEN + "[Class]");
+					event.setLine(1, kitName);
+					if (price == -1) {
+						event.setLine(2, "Price: Free");
+					} else {
+						event.setLine(2, "Price: " + price);
+					}
+					event.setLine(3, ChatColor.AQUA + isDonator);
 				} else {
-					isDonator = "XP Kit";
+					event.setLine(1, ChatColor.RED + "Invalid Kit");
 				}
-				event.setLine(0, ChatColor.GREEN + "[Class]");
-				event.setLine(1, kitName);
-				if (price == -1) {
-					event.setLine(2, "Price: Free");
-				} else {
-					event.setLine(2, "Price: " + price);
-				}
-				event.setLine(3, ChatColor.AQUA + isDonator);
 			} else {
-				event.setLine(1, ChatColor.RED + "Invalid Kit");
+				event.getPlayer().sendMessage(prefix + ChatColor.RED + "You don't have permission!");
 			}
 		}
 	}
@@ -42,11 +46,11 @@ public class BuySigns extends XPBuy implements Listener {
 		Action action = event.getAction();
 		Player player = event.getPlayer();
 		Block block = event.getClickedBlock();
-		if (action == Action.LEFT_CLICK_BLOCK && block.getType().equals(Material.SIGN_POST)
-				|| action == Action.LEFT_CLICK_BLOCK && block.getType().equals(Material.WALL_SIGN)) {
+		if (action == Action.RIGHT_CLICK_BLOCK && block.getType().equals(Material.SIGN_POST)
+				|| action == Action.RIGHT_CLICK_BLOCK && block.getType().equals(Material.WALL_SIGN)) {
 			Sign sign = (Sign) block.getState();
 			if (sign.getLine(0).equals(ChatColor.GREEN + "[Class]")) {
-				if (player.hasPermission("xpbuy.signs")) {
+				if (player.hasPermission("xpbuy.usesigns")) {
 					String kitName = sign.getLine(1).toLowerCase();
 					if (Kit.isKit(kitName)) {
 						if (isUpdated(sign)) {

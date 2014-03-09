@@ -3,6 +3,7 @@ package com.github.xpbuy;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -20,20 +21,13 @@ public class Kit extends XPBuy {
 			PlayerInventory inv = p.getInventory();
 			ArrayList<String> items = new ArrayList<String>(config.getStringList("kits." + kitName.toLowerCase()));
 			int defaultItem = config.getInt("defaultitem");
+            inv.setArmorContents(new ItemStack[4]);
 			for (int i = 0; i < 36; i++) { // sets all slots to default item
 				inv.setItem(i, new ItemStack(defaultItem, 1));
 			}
 			for (int i = 0; i < items.size(); i++) {
 				int itemID = -1;
 				if (hasDamageValue(items.get(i)) || hasEnchant(items.get(i))) {
-					if (hasDamageValue(items.get(i))) {
-						itemID = Integer.parseInt(items.get(i).substring(0, items.get(i).indexOf(":")));
-						if (itemID > 297 && itemID < 318) {
-							equipArmor(inv, items.get(i));
-						} else {
-							inv.setItem(i, parseDamageValue(items.get(i)));
-						}
-					}
 					if (hasLevel(items.get(i)) && !hasEnchant(items.get(i))) {
 						itemID = Integer.parseInt(items.get(i).substring(0, items.get(i).indexOf(";")));
 						if (itemID > 297 && itemID < 318) {
@@ -41,8 +35,21 @@ public class Kit extends XPBuy {
 						} else {
 							inv.setItem(i, parseEnchant(items.get(i).substring(0, items.get(i).indexOf("-"))));
 						}
-					}
-					if (hasEnchant(items.get(i))) {
+					} else if (hasDamageValue(items.get(i)) && hasEnchant(items.get(i))) {
+						itemID = Integer.parseInt(items.get(i).substring(0, items.get(i).indexOf(":")));
+						if (itemID > 297 && itemID < 318) {
+							equipArmor(inv, items.get(i));
+						} else {
+							inv.setItem(i, parseBoth(items.get(i)));
+						}
+					} else if (hasDamageValue(items.get(i))) {
+						itemID = Integer.parseInt(items.get(i).substring(0, items.get(i).indexOf(":")));
+						if (itemID > 297 && itemID < 318) {
+							equipArmor(inv, items.get(i));
+						} else {
+							inv.setItem(i, parseDamageValue(items.get(i)));
+						}
+					} else if (hasEnchant(items.get(i))) {
 						itemID = Integer.parseInt(items.get(i).substring(0, items.get(i).indexOf(";")));
 						if (itemID > 297 && itemID < 318) {
 							equipArmor(inv, items.get(i));
@@ -83,9 +90,9 @@ public class Kit extends XPBuy {
 	public static ItemStack parseDamageValue(String value) {
 		int itemID = Integer.parseInt(value.substring(0, value.indexOf(":")));
 		int damageValue = Integer.parseInt(value.substring(value.indexOf(":") + 1, value.length()));
-		ItemStack derp =  new ItemStack(itemID, (new ItemStack(itemID).getMaxStackSize()));
-		derp.setDurability((short)damageValue);
-		return derp;
+		ItemStack items =  new ItemStack(itemID, (new ItemStack(itemID).getMaxStackSize()));
+		items.setDurability((short)damageValue);
+		return items;
 	}
 	public static ItemStack parseEnchant(String value) {
 		int itemID = Integer.parseInt(value.substring(0, value.indexOf(";")));
@@ -95,17 +102,39 @@ public class Kit extends XPBuy {
 		} else {
 			enchantValue = Integer.parseInt(value.substring(value.indexOf(";") + 1, value.length()));
 		}
-		ItemStack derp =  new ItemStack(itemID, (new ItemStack(itemID).getMaxStackSize()));
+		ItemStack items = new ItemStack(itemID, (new ItemStack(itemID).getMaxStackSize()));
 		int level = -1;
 		if (hasLevel(value)) {
 			level = Integer.parseInt(value.substring(value.indexOf("-") + 1, value.length()));
 		}
 		if (level == -1) {
-			derp.addEnchantment(Enchantment.getById(enchantValue), 1);
+			items.addEnchantment(Enchantment.getById(enchantValue), 1);
 		} else {
-			derp.addEnchantment(Enchantment.getById(enchantValue), level);
+			items.addEnchantment(Enchantment.getById(enchantValue), level);
 		}
-		return derp;
+		return items;
+	}
+	public static ItemStack parseBoth(String value) {
+		int itemID = Integer.parseInt(value.substring(0, value.indexOf(":")));
+		int damageValue = Integer.parseInt(value.substring(value.indexOf(":") + 1, value.indexOf(";")));
+		int enchantValue = 0;
+		ItemStack items =  new ItemStack(itemID, (new ItemStack(itemID).getMaxStackSize()));
+		items.setDurability((short) damageValue);
+		if (hasLevel(value)) {
+			enchantValue = Integer.parseInt(value.substring(value.indexOf(";") + 1, value.indexOf("-")));
+		} else {
+			enchantValue = Integer.parseInt(value.substring(value.indexOf(";") + 1, value.length()));
+		}
+		int level = -1;
+		if (hasLevel(value)) {
+			level = Integer.parseInt(value.substring(value.indexOf("-") + 1, value.length()));
+		}
+		if (level == -1) {
+			items.addEnchantment(Enchantment.getById(enchantValue), 1);
+		} else {
+			items.addEnchantment(Enchantment.getById(enchantValue), level);
+		}
+		return items;
 	}
 	public static boolean isKit(String kitName) {
 		for (int i = 0; i < kits.size(); i++) {

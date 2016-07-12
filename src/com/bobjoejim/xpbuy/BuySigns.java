@@ -10,7 +10,9 @@ import org.bukkit.event.block.*;
 import org.bukkit.event.player.*;
 
 public class BuySigns extends XPBuy implements Listener {
+	
 	Kit kit = new Kit();
+	
 	@EventHandler
 	public void createClassSign(SignChangeEvent event) {
 		String[] lines = event.getLines();
@@ -41,6 +43,7 @@ public class BuySigns extends XPBuy implements Listener {
 			}
 		}
 	}
+	
 	@EventHandler
 	public void useClassSign(PlayerInteractEvent event) {
 		Action action = event.getAction();
@@ -75,6 +78,7 @@ public class BuySigns extends XPBuy implements Listener {
 			}
 		}
 	}
+	
 	public boolean isUpdated(Sign sign) {
 		String kitName = sign.getLine(1);
 		String priceName = sign.getLine(2).substring(7, sign.getLine(2).length());
@@ -96,6 +100,7 @@ public class BuySigns extends XPBuy implements Listener {
 			return false;
 		}
 	}
+	
 	public void updateSign(Sign sign) {
 		String kitName = sign.getLine(1);
 		String isDonator = "";

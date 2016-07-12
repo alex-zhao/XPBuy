@@ -69,24 +69,28 @@ public class Kit extends XPBuy {
 			p.sendMessage(prefix + ChatColor.GREEN + "Successfully purchased and applied " + kitName + " kit!");
 		}
 	}
+	
 	public static boolean hasDamageValue(String str) {
 		if (str.contains(":")) {
 			return true;
 		}
 		return false;
 	}
+	
 	public static boolean hasEnchant(String str) {
 		if (str.contains(";")) {
 			return true;
 		}
 		return false;
 	}
+	
 	public static boolean hasLevel(String str) {
 		if (str.contains("-")) {
 			return true;
 		}
 		return false;
 	}
+	
 	public static ItemStack parseDamageValue(String value) {
 		int itemID = Integer.parseInt(value.substring(0, value.indexOf(":")));
 		int damageValue = Integer.parseInt(value.substring(value.indexOf(":") + 1, value.length()));
@@ -94,6 +98,7 @@ public class Kit extends XPBuy {
 		items.setDurability((short)damageValue);
 		return items;
 	}
+	
 	public static ItemStack parseEnchant(String value) {
 		int itemID = Integer.parseInt(value.substring(0, value.indexOf(";")));
 		int enchantValue = 0;
@@ -114,6 +119,7 @@ public class Kit extends XPBuy {
 		}
 		return items;
 	}
+	
 	public static ItemStack parseBoth(String value) {
 		int itemID = Integer.parseInt(value.substring(0, value.indexOf(":")));
 		int damageValue = Integer.parseInt(value.substring(value.indexOf(":") + 1, value.indexOf(";")));
@@ -136,6 +142,7 @@ public class Kit extends XPBuy {
 		}
 		return items;
 	}
+	
 	public static boolean isKit(String kitName) {
 		for (int i = 0; i < kits.size(); i++) {
 			if (kitName.equalsIgnoreCase(kits.get(i))) {
@@ -144,6 +151,7 @@ public class Kit extends XPBuy {
 		}
 		return false;
 	}
+	
 	private static void equipArmor(PlayerInventory inv, String id) {
 		int itemID = -1;
 		if (hasDamageValue(id)) {
@@ -186,6 +194,7 @@ public class Kit extends XPBuy {
 			inv.setBoots(new ItemStack(itemID, 1));
 		}
 	}
+	
 	private static String armorType(int id) {
 		if (id > 297 && id < 318) {
 			if (id == 298 || id == 302 || id == 306 || id == 310 || id == 314) {
@@ -200,6 +209,7 @@ public class Kit extends XPBuy {
 		}
 		return "-1";
 	}
+	
 	public static int getPrice(String kitName) {
 		//int price = XPBuy.config.getInt("prices." + kitName.toLowerCase());
 		String priceName = XPBuy.config.getString("prices." + kitName);
@@ -209,12 +219,15 @@ public class Kit extends XPBuy {
 			return Integer.parseInt(priceName);
 		}
 	}
+	
 	public static void updateKits() {
 		kits = new ArrayList<String>(config.getConfigurationSection("kits").getKeys(false));
 	}
+	
 	public static boolean isDonator(String kitName) {
 		return config.getBoolean("isdonator." + kitName.toLowerCase());
 	}
+	
 	public static boolean hasKitPerm(Player p, String kitName) {
 		ArrayList<String> players = new ArrayList<String>(config.getStringList("kitperms." + kitName.toLowerCase()));
 		for (int i = 0; i < players.size(); i++) {
@@ -224,6 +237,7 @@ public class Kit extends XPBuy {
 		}
 		return false;
 	}
+	
 	public static boolean giveKitPerm(Player sender, Player p, String kitName) {
 		if (isKit(kitName)) {
 			if (isDonator(kitName)) {
@@ -251,6 +265,7 @@ public class Kit extends XPBuy {
 			return false;
 		}
 	}
+	
 	public static boolean delKitPerm(Player p, String kitName) {
 		if (isKit(kitName)) {
 			if (isDonator(kitName)) {
@@ -272,6 +287,7 @@ public class Kit extends XPBuy {
 			return false;
 		}
 	}
+	
 	public static boolean setSignOnly(String kitName) { // returns false if value was set to false and vice versa
 		if (config.getBoolean("signonly." + kitName.toLowerCase()) == true) {
 			config.set("signonly." + kitName.toLowerCase(), false);
@@ -281,6 +297,7 @@ public class Kit extends XPBuy {
 			return true;
 		}
 	}
+	
 	public static boolean isSignOnly(String kitName) {
 		return config.getBoolean("signonly." + kitName.toLowerCase());
 	}

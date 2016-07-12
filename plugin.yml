@@ -1,6 +1,6 @@
 name: XPBuy
-main: com.github.xpbuy.XPBuy
-version: 2.7
+main: com.bobjoejim.xpbuy.XPBuy
+version: 2.7.1
 author: Bobjoejim
 description: Buy kits with your experience levels!
 commands:
